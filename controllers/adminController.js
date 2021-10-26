@@ -2,6 +2,7 @@ const Category = require('../models/Category');
 const Bank = require('../models/Bank');
 const Item = require('../models/item');
 const Image = require('../models/Image');
+const Feature = require('../models/Feature');
 const fs = require('fs-extra');
 const path = require('path');
 
@@ -30,7 +31,7 @@ module.exports = {
          req.flash('alertStatus', 'success');
          res.redirect('/admin/category');
       } catch (err) {
-         req.flash('alertMessage', '$err.message');
+         req.flash('alertMessage', $err.message);
          req.flash('alertStatus', 'danger');
          res.redirect('/admin/category');
       }
@@ -46,7 +47,7 @@ module.exports = {
          req.flash('alertStatus', 'success');
          res.redirect('/admin/category');
       } catch (err) {
-         req.flash('alertMessage', '$err.message');
+         req.flash('alertMessage', $err.message);
          req.flash('alertStatus', 'danger');
          res.redirect('/admin/category');
       }
@@ -147,7 +148,7 @@ module.exports = {
          const item = await Item.find()
             .populate({ path: 'imageId', select: 'id imageUrl' })
             .populate({ path: 'categoryId', select: 'id name' });
-         
+
          const category = await Category.find();
          const alertMessage = req.flash('alertMessage');
          const alertStatus = req.flash('alertStatus');
@@ -198,7 +199,7 @@ module.exports = {
          const { id } = req.params;
          const item = await Item.findOne({ _id: id })
             .populate({ path: 'imageId', select: 'id imageUrl' })
-         
+
          const alertMessage = req.flash('alertMessage');
          const alertStatus = req.flash('alertStatus');
          const alert = { message: alertMessage, status: alertStatus };
@@ -286,6 +287,48 @@ module.exports = {
          req.flash('alertMessage', err.message);
          req.flash('alertStatus', 'danger');
          res.redirect('/admin/item');
+      }
+   },
+
+   viewDetailItem: async (req, res) => {
+      const { itemId } = req.params;
+      try {
+         const alertMessage = req.flash('alertMessage');
+         const alertStatus = req.flash('alertStatus');
+         const alert = { message: alertMessage, status: alertStatus };
+         res.render('admin/item/detail/item', { alert, itemId });
+      } catch (err) {
+         req.flash('alertMessage', err.message);
+         req.flash('alertStatus', 'danger');
+         res.redirect(`/admin/item/show-detail-item/${itemId}`);
+      }
+   },
+
+   addFeature: async (req, res) => {
+      try {
+         const { name, qty, itemId } = req.body;
+         if (!req.file) {
+            req.flash('alertMessage', 'Image not found');
+            req.flash('alertStatus', 'danger');
+            res.redirect(`/admin/item/show-detail-item/${itemId}`);
+         }
+         const feature = await Feature.create({
+            name,
+            qty,
+            itemId,
+            imageUrl: `images/${req.file.filename}`
+         });
+
+         const item = await Item.findOne({ _id: itemId });
+         item.featureId.push({ _id: feature._id });
+         await item.save();
+         req.flash('alertMessage', 'Success added feature');
+         req.flash('alertStatus', 'success');
+         res.redirect(`/admin/item/show-detail-item/${itemId}`);
+      } catch (err) {
+         req.flash('alertMessage', err.message);
+         req.flash('alertStatus', 'danger');
+         res.redirect(`/admin/item/show-detail-item${itemId}`);
       }
    },
 
