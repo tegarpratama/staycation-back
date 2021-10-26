@@ -83,6 +83,8 @@
     </div>
   </div>
 
+<%- include('modal_activity')  %> 
+<%- include('modal_feature')  %> 
 <%- include('../../../partials/js')  %> 
 <script>
   $(document).ready(function() {
@@ -91,4 +93,25 @@
 
   CKEDITOR.replace('about');
 
+  $('#dataTable').on('click', '.button-update', function() {
+    let id = $(this).data('id');
+    let name = $(this).data('name');
+    let qty = $(this).data('qty');
+
+    $('#edit-modal').modal('show');
+    $('.id').val(id);
+    $('.name').val(name);
+    $('.qty').val(qty);
+  });
+
+  $('#datatableActivity').on('click', '.button-update', function() {
+    let id = $(this).data('id');
+    let name = $(this).data('name');
+    let type = $(this).data('type');
+
+    $('#edit-modal').modal('show');
+    $('.id').val(id);
+    $('.name').val(name);
+    $('.type').val(type);
+  });
 </script>
