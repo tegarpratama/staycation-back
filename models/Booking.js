@@ -1,54 +1,68 @@
-const mongoose = require('mongoose');
-const ObjectId = Schema.ObjectId;
+const mongoose = require("mongoose");
+const { ObjectId } = mongoose.Schema;
 
 const bookingSchema = new mongoose.Schema({
-   bookingStartDate: {
-      type: Date,
-      required: true
-   },
-   bookingEndDate: {
-      type: Date,
-      required: true,
-   },
-   itemId: [{
-      _id: {
-         type: ObjectId,
-         ref: 'Item',
-         required: true
-      },
-      price: {
-         type: Number,
-         required: true
-      },
-      night: {
-         type: Number,
-         required: true
-      },
-   }],
-   memberId: [{
+  bookingStartDate: {
+    type: Date,
+    required: true
+  },
+  bookingEndDate: {
+    type: Date,
+    required: true
+  },
+  invoice: {
+    type: String,
+    required: true
+  },
+  itemId: {
+    _id: {
       type: ObjectId,
-      ref: 'Member',
-   }],
-   bankId: [{
-      type: ObjectId,
-      ref: 'Bank',
-   }],
-   proofPayment: {
+      ref: 'Item',
+      required: true
+    },
+    title: {
       type: String,
       required: true
-   },
-   bankFrom: {
+    },
+    price: {
+      type: Number,
+      required: true
+    },
+    duration: {
+      type: Number,
+      required: true
+    }
+  },
+  total: {
+    type: Number,
+    required: true
+  },
+  memberId: {
+    type: ObjectId,
+    ref: 'Member'
+  },
+  bankId: {
+    type: ObjectId,
+    ref: 'Bank'
+  },
+  payments: {
+    proofPayment: {
       type: String,
       required: true
-   },
-   accountHolder: {
+    },
+    bankFrom: {
       type: String,
       required: true
-   },
-   status: {
+    },
+    accountHolder: {
       type: String,
       required: true
-   },
-});
+    },
+    status: {
+      type: String,
+      default: 'Proses'
+    }
+  }
+})
 
-module.exports = mongoose.model('Booking', bookingSchema);
+module.exports = mongoose.model('Booking', bookingSchema)
